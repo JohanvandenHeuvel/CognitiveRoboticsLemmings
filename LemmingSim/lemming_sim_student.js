@@ -25,19 +25,34 @@ RobotInfo = [
    sensors: [  // define an array of sensors on the robot
      // define one sensor
      {sense: senseDistance,  // function handle, determines type of sensor
-      minVal: 0,  // minimum detectable distance, in pixels
-      maxVal: 50,  // maximum detectable distance, in pixels
-      attachAngle: Math.PI/4,  // where the sensor is mounted on robot body
-      lookAngle: 0,  // direction the sensor is looking (relative to center-out)
-      id: 'distR',  // a unique, arbitrary ID of the sensor, for printing/debugging
-      color: [150, 0, 0],  // sensor color [in RGB], to distinguish them
-      parent: null,  // robot object the sensor is attached to, added by InstantiateRobot
-      value: null  // sensor value, i.e. distance in pixels; updated by sense() function
-     },
-     // define another sensor
-     {sense: senseDistance, minVal: 0, maxVal: 50, attachAngle: -Math.PI/4,
-      lookAngle: 0, id: 'distL', color: [0, 150, 0], parent: null, value: null
-     }
+           minVal: 0,  // minimum detectable distance, in pixels
+           maxVal: 50,  // maximum detectable distance, in pixels
+           attachAngle: Math.PI/4,  // where the sensor is mounted on robot body
+           lookAngle: 0,  // direction the sensor is looking (relative to center-out)
+           id: 'distR',  // a unique, arbitrary ID of the sensor, for printing/debugging
+           color: [150, 0, 0],  // sensor color [in RGB], to distinguish them
+           parent: null,  // robot object the sensor is attached to, added by InstantiateRobot
+           value: null  // sensor value, i.e. distance in pixels; updated by sense() function
+       },
+       // define another sensor
+       {sense: senseDistance, minVal: 0, maxVal: 50, attachAngle: -Math.PI/4,
+           lookAngle: 0, id: 'distL', color: [0, 150, 0], parent: null, value: null
+       },
+
+       {sense: senseColor,  // function handle, determines type of sensor
+           minVal: 0,  // minimum detectable distance, in pixels
+           maxVal: 50,  // maximum detectable distance, in pixels
+           attachAngle: Math.PI/4,  // where the sensor is mounted on robot body
+           lookAngle: 0,  // direction the sensor is looking (relative to center-out)
+           id: 'colR',  // a unique, arbitrary ID of the sensor, for printing/debugging
+           color: [150, 0, 0],  // sensor color [in RGB], to distinguish them
+           parent: null,  // robot object the sensor is attached to, added by InstantiateRobot
+           value: null  // sensor value, i.e. distance in pixels; updated by sense() function
+       },
+       // define another sensor
+       {sense: senseColor, minVal: 0, maxVal: 50, attachAngle: -Math.PI/4,
+           lookAngle: 0, id: 'colL', color: [0, 150, 0], parent: null, value: null
+       }
    ]
   }
 ];
@@ -56,8 +71,8 @@ simInfo = {
   baySensor: null,  // currently selected sensor
   bayScale: 3,  // scale within 2nd, inset canvas showing robot in it's "bay"
   doContinue: true,  // whether to continue simulation, set in HTML
-  debugSensors: false,  // plot sensor rays and mark detected objects
-  debugMouse: false,  // allow dragging any object with the mouse
+  debugSensors: true,  // plot sensor rays and mark detected objects
+  debugMouse: true,  // allow dragging any object with the mouse
   engine: null,  // MatterJS 2D physics engine
   world: null,  // world object (composite of all objects in MatterJS engine)
   runner: null,  // object for running MatterJS engine
@@ -175,6 +190,122 @@ function drive(robot, force=0) {
   Matter.Body.applyForce(robot.body, robot.body.position , move_vec);
 };
 
+function senseColor() {
+    /* WRITTEN AFTERWARDS by Matthijs.
+     *
+     * Color sensor simulation. Called from sensor object, returns nothing, updates a new reading into this.value.
+     *
+     * Idea: Cast a ray with a certain length from the sensor, and check
+     *       via collision detection if objects intersect with the ray.
+     *       Update value with object color. Writes [0,0,0] if no color is found!
+     * Note: Sensor ray needs to ignore robot (parts), or start outside of it.
+     *       The latter is easy with the current circular shape of the robots.
+     * Note: Order of tests are optimized by starting with max ray length, and
+     *       then only testing the maximal number of initially resulting objects.
+     * Note: The sensor's "ray" could have any other (convex) shape;
+     *       currently it's just a very thin rectangle.
+     */
+
+    const context = document.getElementById('arenaLemming').getContext('2d');
+    var bodies = Matter.Composite.allBodies(simInfo.engine.world);
+
+    const robotAngle = this.parent.body.angle,
+        attachAngle = this.attachAngle,
+        rayAngle = robotAngle + attachAngle + this.lookAngle;
+
+    const rPos = this.parent.body.position,
+        rSize = simInfo.robotSize,
+        startPoint = {x: rPos.x + (rSize+1) * Math.cos(robotAngle + attachAngle),
+            y: rPos.y + (rSize+1) * Math.sin(robotAngle + attachAngle)};
+
+    function getEndpoint(rayLength) {
+        return {x: rPos.x + (rSize + rayLength) * Math.cos(rayAngle),
+            y: rPos.y + (rSize + rayLength) * Math.sin(rayAngle)};
+    };
+
+    function sensorRay(bodies, rayLength) {
+        // Cast ray of supplied length and return the bodies that collide with it.
+        const rayWidth = 1e-100,
+            endPoint = getEndpoint(rayLength);
+        rayX = (endPoint.x + startPoint.x) / 2,
+            rayY = (endPoint.y + startPoint.y) / 2,
+            rayRect = Matter.Bodies.rectangle(rayX, rayY, rayLength, rayWidth,
+                {isSensor: true, isStatic: true,
+                    angle: rayAngle, role: 'sensor'});
+
+        var collidedBodies = [];
+        for (var bb = 0; bb < bodies.length; bb++) {
+            var body = bodies[bb];
+            // coarse check on body boundaries, to increase performance:
+            if (Matter.Bounds.overlaps(body.bounds, rayRect.bounds)) {
+                for (var pp = body.parts.length === 1 ? 0 : 1; pp < body.parts.length; pp++) {
+                    var part = body.parts[pp];
+                    // finer, more costly check on actual geometry:
+                    if (Matter.Bounds.overlaps(part.bounds, rayRect.bounds)) {
+                        const collision = Matter.SAT.collides(part, rayRect);
+                        if (collision.collided) {
+                            collidedBodies.push(body);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return collidedBodies;
+    };
+
+    // call 1x with full length, and check all bodies in the world;
+    // in subsequent calls, only check the bodies resulting here
+    var rayLength = this.maxVal;
+    bodies = sensorRay(bodies, rayLength);
+    // if some collided, search for maximal ray length without collisions
+    if (bodies.length > 0) {
+        var lo = 0,
+            hi = rayLength;
+        while (lo < rayLength) {
+            if (sensorRay(bodies, rayLength).length > 0) {
+                hi = rayLength;
+            }
+            else {
+                lo = rayLength;
+            }
+            rayLength = Math.floor(lo + (hi-lo)/2);
+        }
+    }
+    // increase length to (barely) touch closest body (if any)
+    rayLength += 1;
+    bodies = sensorRay(bodies, rayLength);
+    if(bodies.length == 1)
+      color = bodies[0].color;
+    else if (bodies.length == 0)
+      color = [0, 0, 0];
+
+
+    if (simInfo.debugSensors) {  // if invisible, check order of object drawing
+        // draw the resulting ray
+        endPoint = getEndpoint(rayLength);
+        context.beginPath();
+        context.moveTo(startPoint.x, startPoint.y);
+        context.lineTo(endPoint.x, endPoint.y);
+        context.strokeStyle = this.parent.info.color;
+        context.lineWidth = 0.5;
+        context.stroke();
+        // mark all objects's lines intersecting with the ray
+        for (var bb = 0; bb < bodies.length; bb++) {
+            var vertices = bodies[bb].vertices;
+            context.moveTo(vertices[0].x, vertices[0].y);
+            for (var vv = 1; vv < vertices.length; vv += 1) {
+                context.lineTo(vertices[vv].x, vertices[vv].y);
+            }
+            context.closePath();
+        }
+        context.stroke();
+    }
+
+    //IMPLEMENT COLOR NOISE HERE?
+
+    this.value = color;
+};
 
 function senseDistance() {
   /* Distance sensor simulation based on ray casting. Called from sensor
