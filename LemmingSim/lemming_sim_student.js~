@@ -569,7 +569,7 @@ function robotMove(robot) {
 	// - If it carries a red block it should turn right to keep the block
 	
 	driveConstant = 0.0005;
-	turnConstant = 0.005;
+	turnConstant = +0.005;
 	
 	//TODO possible to combine distance and color sensor?
 	//TODO add sensor to front instead of sides/ or in addtion to
