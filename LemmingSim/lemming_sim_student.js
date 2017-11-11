@@ -580,8 +580,14 @@ function robotMove(robot) {
 	sensorDistanceLeftVal = robot.sensors[1].value;
 
 	sensesBlock = 0;	//TODO plugin code for sensing
-	sensesWall = 1;
+	sensesWall = 0;
 
+	console.log(sensorColorLeftVal);
+	console.log(sensorColorRightVal);
+	console.log(sensorDistanceLeftVal);
+	console.log(sensorDistanceRightVal);
+
+	/*
 	if(sensesBlock){
 		switch(){
 			case noBlock:
@@ -604,6 +610,7 @@ function robotMove(robot) {
 			default:
 				console.log("Error")
 		}
+	*/
 	
 		//TODO check which direction is left and right
 		//TODO work out turning left to leave blue block if wall sensed
@@ -614,8 +621,8 @@ function robotMove(robot) {
 	//Helper function
 		//use the concept of a vector to determine movement of a robot
 	function driveVector(robot, force, angle){
-	robot.drive(robot, force)
-	robot.rotate(robot, angel)
+		robot.drive(robot, force)
+		robot.rotate(robot, angle)
 }
 };
 
