@@ -17,6 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+
+
 // Description of robot(s), and attached sensor(s) used by InstantiateRobot()
 RobotInfo = [
   {body: null,  // for MatterJS body, added by InstantiateRobot()
@@ -78,7 +81,10 @@ simInfo = {
   runner: null,  // object for running MatterJS engine
   height: null,  // set in HTML file; height of arena (world canvas), in pixels
   width: null,  // set in HTML file; width of arena (world canvas), in pixels
-  curSteps: 0  // increased by simStep()
+  curSteps: 0,  // increased by simStep()
+
+  tresHoldInCorner: 3 * 20,
+  percentageBlueBoxesInWall: 0
 };
 
 robots = new Array();
@@ -725,7 +731,8 @@ function plotRobot(context,
 
 function simStep() {
   // advance simulation by one step (except MatterJS engine's physics)
-  if (simInfo.curSteps < simInfo.maxSteps) {
+    console.log(simInfo.percentageBlueBoxesInWall > 0.80)
+  if (simInfo.curSteps < simInfo.maxSteps && simInfo.percentageBlueBoxesInWall < 0.80) {
     repaintBay();
     drawBoard();
     for (var rr = 0; rr < robots.length; ++rr) {
@@ -743,12 +750,71 @@ function simStep() {
       padnumber(simInfo.curSteps, 5) +
       ' of ' +
       padnumber(simInfo.maxSteps, 5);
+
+    if (simInfo.curSteps%30==0)
+      updateStatistics();
   }
   else {
     toggleSimulation();
   }
 }
 
+/*
+Updates the statistics in simInfo.
+ */
+function updateStatistics() {
+  bodies = Matter.Composite.allBodies(simInfo.world)
+  boxes = bodies.filter(body => body.role == "box");
+  blueBoxes = boxes.filter(box => box.color[2] > box.color[0]);
+  redBoxes = boxes.filter(box => box.color[0] > box.color[2]);
+  blueBoxesPos = blueBoxes.map(box => box.position);
+  redBoxesPos = redBoxes.map(box => box.position);
+
+  function calcPercentageTresholdFromCorner(boxesPos,treshold){
+        height = simInfo.height;
+        width = simInfo.width;
+        wallThickness = 5;
+
+
+      boxesDisFromCorner = boxesPos.map(boxPos => Math.sqrt(
+           Math.pow(Math.min(boxPos.x - wallThickness,(width - wallThickness) - boxPos.x),2) +
+           Math.pow(Math.min(boxPos.y - wallThickness,(height - wallThickness) - boxPos.y),2)));
+
+      boxesWithinTreshFromCorner = boxesDisFromCorner.filter(boxDist => boxDist < treshold)
+
+      console.log(boxesWithinTreshFromCorner.length / blueBoxes.length)
+      return(boxesWithinTreshFromCorner.length / blueBoxes.length);
+    }
+
+    simInfo.percentageBlueBoxesInWall = calcPercentageTresholdFromCorner(blueBoxesPos,simInfo.tresHoldInCorner)
+  //AGAIN UNUSED, BUT MAYBE NESSECARY LATER
+  //Calculating the mean distance from the center
+  /*function calcMeanDistFromCenter(boxesPos){
+      height = simInfo.height;
+      width = simInfo.width;
+      boxesPosFromCenter = boxesPos.map(boxPos => Math.sqrt(Math.pow(boxPos.x-width/2,2) + Math.pow(boxPos.y-height/2,2)));
+      return(mean(boxesPosFromCenter));
+  }
+  simInfo.meanBlueDisToCenter.push(calcMeanDistFromCenter(blueBoxesPos))
+  simInfo.meanRedDisToCenter.push(calcMeanDistFromCenter(redBoxesPos))
+
+
+    //Calculating the mean distance from the closest wall
+    function calcMeanDistFromWall(boxesPos){
+        height = simInfo.height;
+        width = simInfo.width;
+        wallThickness = 5;
+
+        boxesPosFromWall = boxesPos.map(boxPos => Math.min(
+            boxPos.x - wallThickness,
+            boxPos.y - wallThickness,
+            (height - wallThickness) - boxPos.y,
+            (width - wallThickness) - boxPos.x));
+        return(mean(boxesPosFromWall));
+    }
+    simInfo.meanBlueDisToClosestWall.push(calcMeanDistFromWall(blueBoxesPos))
+    simInfo.meanRedDisToClosestWall.push(calcMeanDistFromWall(redBoxesPos))*/
+}
 function drawBoard() {
   var context = document.getElementById('arenaLemming').getContext('2d');
   context.fillStyle = "#444444";
@@ -853,6 +919,14 @@ function format(number) {
   return (number >= 0 ? '+' : '−') + Math.abs(number).toFixed(1);
 }
 
+function mean(numbers){
+  sum = 0;
+  for (i in numbers){
+    sum = sum + numbers[i]
+  }
+  return sum/numbers.length
+}
+
 function toggleSimulation() {
   simInfo.doContinue = !simInfo.doContinue;
   if (simInfo.doContinue) {
@@ -863,3 +937,40 @@ function toggleSimulation() {
   }
 }
 
+
+/*
+CURRENTLY UNUSED, BUT MAYBE NEEDED LATER
+ This is the code used to save files to the system. Comes from Github.
+ Source: http://purl.eligrey.com/github/FileSaver.js/blob/master/FileSaver.js
+ */
+var saveAs=saveAs||function(e){"use strict";if(typeof e==="undefined"||typeof navigator!=="undefined"&&/MSIE [1-9]\./.test(navigator.userAgent)){return}var t=e.document,n=function(){return e.URL||e.webkitURL||e},r=t.createElementNS("http://www.w3.org/1999/xhtml","a"),o="download"in r,a=function(e){var t=new MouseEvent("click");e.dispatchEvent(t)},i=/constructor/i.test(e.HTMLElement)||e.safari,f=/CriOS\/[\d]+/.test(navigator.userAgent),u=function(t){(e.setImmediate||e.setTimeout)(function(){throw t},0)},s="application/octet-stream",d=1e3*40,c=function(e){var t=function(){if(typeof e==="string"){n().revokeObjectURL(e)}else{e.remove()}};setTimeout(t,d)},l=function(e,t,n){t=[].concat(t);var r=t.length;while(r--){var o=e["on"+t[r]];if(typeof o==="function"){try{o.call(e,n||e)}catch(a){u(a)}}}},p=function(e){if(/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(e.type)){return new Blob([String.fromCharCode(65279),e],{type:e.type})}return e},v=function(t,u,d){if(!d){t=p(t)}var v=this,w=t.type,m=w===s,y,h=function(){l(v,"writestart progress write writeend".split(" "))},S=function(){if((f||m&&i)&&e.FileReader){var r=new FileReader;r.onloadend=function(){var t=f?r.result:r.result.replace(/^data:[^;]*;/,"data:attachment/file;");var n=e.open(t,"_blank");if(!n)e.location.href=t;t=undefined;v.readyState=v.DONE;h()};r.readAsDataURL(t);v.readyState=v.INIT;return}if(!y){y=n().createObjectURL(t)}if(m){e.location.href=y}else{var o=e.open(y,"_blank");if(!o){e.location.href=y}}v.readyState=v.DONE;h();c(y)};v.readyState=v.INIT;if(o){y=n().createObjectURL(t);setTimeout(function(){r.href=y;r.download=u;a(r);h();c(y);v.readyState=v.DONE});return}S()},w=v.prototype,m=function(e,t,n){return new v(e,t||e.name||"download",n)};if(typeof navigator!=="undefined"&&navigator.msSaveOrOpenBlob){return function(e,t,n){t=t||e.name||"download";if(!n){e=p(e)}return navigator.msSaveOrOpenBlob(e,t)}}w.abort=function(){};w.readyState=w.INIT=0;w.WRITING=1;w.DONE=2;w.error=w.onwritestart=w.onprogress=w.onwrite=w.onabort=w.onerror=w.onwriteend=null;return m}(typeof self!=="undefined"&&self||typeof window!=="undefined"&&window||this.content);if(typeof module!=="undefined"&&module.exports){module.exports.saveAs=saveAs}else if(typeof define!=="undefined"&&define!==null&&define.amd!==null){define("FileSaver.js",function(){return saveAs})}
+
+function exportExcel()
+{
+    var data = [simInfo.meanRedDisToCenter, simInfo.meanBlueDisToCenter, simInfo.meanRedDisToClosestWall, simInfo.meanBlueDisToClosestWall];
+    var keys = ['MeanRedDisToCenter', 'MeanBlueDisToCenter', 'MeanRedDisToClosestWall', 'MeanBlueDisToClosestWall'];
+
+    var convertToCSV = function(data, keys) {
+        var orderedData = [];
+        for (var i = 0, iLen = data.length; i < iLen; i++) {
+            temp = data[i];
+            for (var j = 0, jLen = temp.length; j < jLen; j++) {
+
+                quotes = ['"'+temp[j]+'"'];
+                if (!orderedData[j]) {
+                    orderedData.push([quotes]);
+                } else {
+                    orderedData[j].push(quotes);
+                }
+            }
+        }
+        return keys.join(',') + '\r\n' + orderedData.join('\r\n');
+    }
+
+
+    var str = convertToCSV(data, keys);
+    var blob = new Blob([str], {type: "text/plain;charset=utf-8"});
+    var d = new Date;
+    var filename = 'Lemmings run ' + d.getMinutes() + "min" + d.getHours() + "h" + d.getDate()+ "d" + d.getMonth() + "m";
+    saveAs(blob, [filename+'.csv']);
+}
