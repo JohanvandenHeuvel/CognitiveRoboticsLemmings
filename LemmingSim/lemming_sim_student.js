@@ -584,8 +584,8 @@ function robotMove(robot) {
   const distL = getSensorValById(robot, 'distL'),
         distR = getSensorValById(robot, 'distR');
 
-  const objL = classifyRGB(getSensorValById(robot, 'colL')),
-        objR = classifyRGB(getSensorValById(robot, 'colR'));
+  const colL = classifyRGB(getSensorValById(robot, 'colL')),
+        colR = classifyRGB(getSensorValById(robot, 'colR'));
 
   robot.rotate(robot, +0.005);
   robot.drive(robot, 0.0005);
@@ -607,20 +607,16 @@ function robotMove(robot) {
 	
 	//TODO possible to combine distance and color sensor?
 	//TODO add sensor to front instead of sides/ or in addtion to
-	sensorColorRightVal = robot.sensors[2].value;
-	sensorColorLeftVal = robot.sensors[3].value;
-
-	sensorDistanceRightVal = robot.sensors[0].value;
-	sensorDistanceLeftVal = robot.sensors[1].value;
-
 	sensesBlock = 0;	//TODO plugin code for sensing
 	sensesWall = 0;
 
-	console.log(sensorColorLeftVal);
-	console.log(sensorColorRightVal);
-	console.log(sensorDistanceLeftVal);
-	console.log(sensorDistanceRightVal);
-
+	console.log(distL)
+	console.log(distR)
+	console.log(colL)
+	console.log(colR)
+	
+	//TODO test and fine tune the main behavior
+	//Uncomment next code block to implement the next behavior
 	/*
 	if(sensesBlock){
 		switch(){
@@ -646,10 +642,10 @@ function robotMove(robot) {
 		}
 	*/
 	
-		//TODO check which direction is left and right
-		//TODO work out turning left to leave blue block if wall sensed
-		//TODO work out grasping and leaving blocks
-		//TODO test if the function driveVector works
+	//TODO check which direction is left and right
+	//TODO work out turning left to leave blue block if wall sensed
+	//TODO work out grasping and leaving blocks
+	//TODO test if the function driveVector works
 	driveVector(robot, force=driveConstant, angle=turnConstant);
 	
 	//Helper function
