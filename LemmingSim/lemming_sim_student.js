@@ -196,6 +196,33 @@ function drive(robot, force=0) {
   Matter.Body.applyForce(robot.body, robot.body.position , move_vec);
 };
 
+/*
+Lower 2 functions written by Max & Felicity for generating noise for the colour sensors
+ */
+function gaussColorNoise(sigma=5) {
+    const x0 = 1.0 - Math.random();
+    const x1 = 1.0 - Math.random();
+    return sigma * Math.sqrt(-2 * Math.log(x0)) * Math.cos(2 * Math.PI * x1);
+};
+
+function colorNoise(color) {
+    var noise = [Math.round(gaussColorNoise()),
+        Math.round(gaussColorNoise()),
+        Math.round(gaussColorNoise())];
+
+    var newColor = [0,0,0];
+    for(i=0; i<newColor.length;i++) {
+        newColor[i] = color[i] + noise[i];
+        // In case the new color values become negative, they should be minimally set to 0
+        if (newColor[i] < 0) {
+            newColor[i] = 0;
+        }
+    }
+    return newColor;
+}
+
+
+
 function senseColor() {
     /* WRITTEN AFTERWARDS by Matthijs.
      *
@@ -308,9 +335,7 @@ function senseColor() {
         context.stroke();
     }
 
-    //IMPLEMENT COLOR NOISE HERE?
-
-    this.value = color;
+    this.value = colorNoise(color);
 };
 
 function senseDistance() {
@@ -559,6 +584,9 @@ function robotMove(robot) {
   const distL = getSensorValById(robot, 'distL'),
         distR = getSensorValById(robot, 'distR');
 
+  const objL = classifyRGB(getSensorValById(robot, 'colL')),
+        objR = classifyRGB(getSensorValById(robot, 'colR'));
+
   robot.rotate(robot, +0.005);
   robot.drive(robot, 0.0005);
     
@@ -727,6 +755,25 @@ function plotRobot(context,
     }
   }
   context.restore();
+}
+
+/*
+Added by Matthijs. Classifies rgb values into percepts.
+ */
+function classifyRGB(rgb) {
+    r = rgb[0];g = rgb[1];b = rgb[2];
+
+    if (r<25&&g<25&&b<25){
+        return("Empty");
+    } else if (r>150&&g<25&&b<25){
+        return("Red");
+    } else if (r<25&&g<25&&b>150){
+        return("Blue");
+    } else if (r>200&&g>200&&b>200) {
+        return ("Robot");
+    } else if (r>100&&r<200&&g>100&&g<200&&b>100&&b<200) {
+        return ("Wall");
+    }
 }
 
 function simStep() {
