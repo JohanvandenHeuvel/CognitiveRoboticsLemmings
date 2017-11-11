@@ -584,8 +584,8 @@ function robotMove(robot) {
   const distL = getSensorValById(robot, 'distL'),
         distR = getSensorValById(robot, 'distR');
 
-  const colL = classifyRGB(getSensorValById(robot, 'colL')),
-        colR = classifyRGB(getSensorValById(robot, 'colR'));
+  const objL = classifyRGB(getSensorValById(robot, 'colL')),
+        objR = classifyRGB(getSensorValById(robot, 'colR'));
 
   robot.rotate(robot, +0.005);
   robot.drive(robot, 0.0005);
@@ -612,8 +612,8 @@ function robotMove(robot) {
 
 	console.log(distL)
 	console.log(distR)
-	console.log(colL)
-	console.log(colR)
+	console.log(objL)
+	console.log(objR)
 	
 	//TODO test and fine tune the main behavior
 	//Uncomment next code block to implement the next behavior
