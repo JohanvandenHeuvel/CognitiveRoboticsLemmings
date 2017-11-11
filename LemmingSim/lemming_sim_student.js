@@ -361,8 +361,9 @@ function loadFromSVG() {
   const svg = document.getElementById('robotbodySVG'),
         data = svg.contentDocument;
 
+
   jQuery(data).find('path').each(function(_, path) {
-    var points = Matter.Svg.pathToVertices(path, 30);
+    var points = Matter.Svg.pathToVertices(path, 10);
     vertexSets.push(Matter.Vertices.scale(points, 0.2, 0.2));
   });
 
@@ -372,13 +373,16 @@ function loadFromSVG() {
 function InstantiateRobot(robotInfo) {
   // load robot's body shape from SVG file
   const bodySVGpoints = loadFromSVG();
-  this.body = Matter.Bodies.fromVertices(robotInfo.init.x,
+  this.body = Matter.Bodies.rectangle(robotInfo.init.x,
                                          robotInfo.init.y,
-                                         bodySVGpoints,
+                                        2,2,
                                          {frictionAir: simInfo.airDrag,
                                           mass: simInfo.robotMass,
                                           color: [255, 255, 255],
-                                          role: 'robot'}, true);
+                                          vertices: bodySVGpoints[0],
+                                          axes: bodySVGpoints[0],
+                                          role: 'robot'}, true, removeCollinear = 0.01);
+
 
   Matter.World.add(simInfo.world, this.body);
   Matter.Body.setAngle(this.body, robotInfo.init.angle);
@@ -443,7 +447,7 @@ function plotRobot(context,
                    yTopLeft = this.body.position.y) {
   var x, y, scale, angle, i, half, full,
       rSize = simInfo.robotSize;
-  const showInternalEdges = false;
+  const showInternalEdges = true;
 
   if (context.canvas.id == "bayLemming") {
     scale = simInfo.bayScale;
@@ -471,6 +475,7 @@ function plotRobot(context,
 
     const body = this.body;
     // handle compound parts
+
 
     context.beginPath();
     for (k = body.parts.length > 1 ? 1 : 0; k < body.parts.length; k++) {
