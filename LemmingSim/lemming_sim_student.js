@@ -20,46 +20,6 @@
 
 
 
-// Description of robot(s), and attached sensor(s) used by InstantiateRobot()
-RobotInfo = [
-  {body: null,  // for MatterJS body, added by InstantiateRobot()
-   color: [255, 255, 255],  // color of the robot shape
-   init: {x: 50, y: 50, angle: 0},  // initial position and orientation
-   sensors: [  // define an array of sensors on the robot
-     // define one sensor
-     {sense: senseDistance,  // function handle, determines type of sensor
-           minVal: 0,  // minimum detectable distance, in pixels
-           maxVal: 50,  // maximum detectable distance, in pixels
-           attachAngle: Math.PI/4,  // where the sensor is mounted on robot body
-           lookAngle: 0,  // direction the sensor is looking (relative to center-out)
-           id: 'distR',  // a unique, arbitrary ID of the sensor, for printing/debugging
-           color: [150, 0, 0],  // sensor color [in RGB], to distinguish them
-           parent: null,  // robot object the sensor is attached to, added by InstantiateRobot
-           value: null  // sensor value, i.e. distance in pixels; updated by sense() function
-       },
-       // define another sensor
-       {sense: senseDistance, minVal: 0, maxVal: 50, attachAngle: -Math.PI/4,
-           lookAngle: 0, id: 'distL', color: [0, 150, 0], parent: null, value: null
-       },
-
-       {sense: senseColor,  // function handle, determines type of sensor
-           minVal: 0,  // minimum detectable distance, in pixels
-           maxVal: 50,  // maximum detectable distance, in pixels
-           attachAngle: Math.PI/4,  // where the sensor is mounted on robot body
-           lookAngle: 0,  // direction the sensor is looking (relative to center-out)
-           id: 'colR',  // a unique, arbitrary ID of the sensor, for printing/debugging
-           color: [150, 0, 0],  // sensor color [in RGB], to distinguish them
-           parent: null,  // robot object the sensor is attached to, added by InstantiateRobot
-           value: null  // sensor value, i.e. distance in pixels; updated by sense() function
-       },
-       // define another sensor
-       {sense: senseColor, minVal: 0, maxVal: 50, attachAngle: -Math.PI/4,
-           lookAngle: 0, id: 'colL', color: [0, 150, 0], parent: null, value: null
-       }
-   ]
-  }
-];
-
 // Simulation settings; please change anything that you think makes sense.
 simInfo = {
   maxSteps: 50000,  // maximal number of simulation steps to run
@@ -86,6 +46,83 @@ simInfo = {
   tresHoldInCorner: 3 * 20,
   percentageBlueBoxesInWall: 0
 };
+
+
+// Description of robot(s), and attached sensor(s) used by InstantiateRobot()
+RobotInfo = [
+    {body: null,  // for MatterJS body, added by InstantiateRobot()
+        color: [255, 255, 255],  // color of the robot shape
+        init: {x: 50, y: 50, angle: 0},  // initial position and orientation
+        sensors: [  // define an array of sensors on the robot
+            // define one sensor
+            {sense: senseColor,  // function handle, determines type of sensor
+                attachRadius: 3*simInfo.robotSize,
+                minVal: 0,  // minimum detectable distance, in pixels
+                maxVal: 50,  // maximum detectable distance, in pixels
+                attachAngle: -Math.PI/10,  // where the sensor is mounted on robot body
+                lookAngle: Math.PI/12,  // direction the sensor is looking (relative to center-out)
+                id: 'leftCol',  // a unique, arbitrary ID of the sensor, for printing/debugging
+                color: [0, 250, 0],  // sensor color [in RGB], to distinguish them
+                parent: null,  // robot object the sensor is attached to, added by InstantiateRobot
+                value: null  // sensor value, i.e. distance in pixels; updated by sense() function
+            },
+            {sense: senseColor,  // function handle, determines type of sensor
+                attachRadius: 2*simInfo.robotSize,
+                minVal: 0,  // minimum detectable distance, in pixels
+                maxVal: 50,  // maximum detectable distance, in pixels
+                attachAngle: -Math.PI/7.5,  // where the sensor is mounted on robot body
+                lookAngle: Math.PI/2,  // direction the sensor is looking (relative to center-out)
+                id: 'midCol',  // a unique, arbitrary ID of the sensor, for printing/debugging
+                color: [0, 250, 0],  // sensor color [in RGB], to distinguish them
+                parent: null,  // robot object the sensor is attached to, added by InstantiateRobot
+                value: null  // sensor value, i.e. distance in pixels; updated by sense() function
+            },
+            {sense: senseColor,  // function handle, determines type of sensor
+                attachRadius: 2.0*simInfo.robotSize,
+                minVal: 20,  // minimum detectable distance, in pixels
+                maxVal: 50,  // maximum detectable distance, in pixels
+                attachAngle: Math.PI/4,  // where the sensor is mounted on robot body
+                lookAngle: -Math.PI/8,  // direction the sensor is looking (relative to center-out)
+                id: 'rightCol',  // a unique, arbitrary ID of the sensor, for printing/debugging
+                color: [0, 250, 0],  // sensor color [in RGB], to distinguish them
+                parent: null,  // robot object the sensor is attached to, added by InstantiateRobot
+                value: null  // sensor value, i.e. distance in pixels; updated by sense() function
+            },
+            {sense: senseDistance,  // function handle, determines type of sensor
+                attachRadius: 1.2*simInfo.robotSize,
+                minVal: 20,  // minimum detectable distance, in pixels
+                maxVal: 50,  // maximum detectable distance, in pixels
+                attachAngle: 0,  // where the sensor is mounted on robot body
+                lookAngle: 0,  // direction the sensor is looking (relative to center-out)
+                id: 'dist',  // a unique, arbitrary ID of the sensor, for printing/debugging
+                color: [175, 0, 175],  // sensor color [in RGB], to distinguish them
+                parent: null,  // robot object the sensor is attached to, added by InstantiateRobot
+                value: null  // sensor value, i.e. distance in pixels; updated by sense() function
+            }
+            // define another sensor
+            /*{sense: senseDistance, attachRadius: 3*simInfo.robotSize, minVal: 0, maxVal: 50, attachAngle: -Math.PI/4,
+                lookAngle: 0, id: 'distL', color: [0, 150, 0], parent: null, value: null
+            },
+
+            {sense: senseColor,  // function handle, determines type of sensor
+                attachRadius: 3*simInfo.robotSize,
+                minVal: 0,  // minimum detectable distance, in pixels
+                maxVal: 50,  // maximum detectable distance, in pixels
+                attachAngle: Math.PI/4,  // where the sensor is mounted on robot body
+                lookAngle: 0,  // direction the sensor is looking (relative to center-out)
+                id: 'colR',  // a unique, arbitrary ID of the sensor, for printing/debugging
+                color: [150, 0, 0],  // sensor color [in RGB], to distinguish them
+                parent: null,  // robot object the sensor is attached to, added by InstantiateRobot
+                value: null  // sensor value, i.e. distance in pixels; updated by sense() function
+            },
+            // define another sensor
+            {sense: senseColor, attachRadius: 3*simInfo.robotSize, minVal: 0, maxVal: 50, attachAngle: -Math.PI/4,
+                lookAngle: 0, id: 'colL', color: [0, 150, 0], parent: null, value: null
+            }*/
+        ]
+    }
+];
+
 
 robots = new Array();
 sensors = new Array();
@@ -247,7 +284,7 @@ function senseColor() {
         rayAngle = robotAngle + attachAngle + this.lookAngle;
 
     const rPos = this.parent.body.position,
-        rSize = simInfo.robotSize,
+        rSize = this.attachRadius,
         startPoint = {x: rPos.x + (rSize+1) * Math.cos(robotAngle + attachAngle),
             y: rPos.y + (rSize+1) * Math.sin(robotAngle + attachAngle)};
 
@@ -257,6 +294,7 @@ function senseColor() {
     };
 
     function sensorRay(bodies, rayLength) {
+        bodies = bodies.filter(body => body.role != 'robot');
         // Cast ray of supplied length and return the bodies that collide with it.
         const rayWidth = 1e-100,
             endPoint = getEndpoint(rayLength);
@@ -288,7 +326,7 @@ function senseColor() {
     };
 
     // call 1x with full length, and check all bodies in the world;
-    // in subsequent calls, only check the bodies resulting here
+    // in subsequent calls only check the bodies resulting here
     var rayLength = this.maxVal;
     bodies = sensorRay(bodies, rayLength);
     // if some collided, search for maximal ray length without collisions
@@ -320,8 +358,9 @@ function senseColor() {
         context.beginPath();
         context.moveTo(startPoint.x, startPoint.y);
         context.lineTo(endPoint.x, endPoint.y);
-        context.strokeStyle = this.parent.info.color;
-        context.lineWidth = 0.5;
+        //context.color
+        context.strokeStyle = convrgb(this.color);
+        context.lineWidth = 2.0;
         context.stroke();
         // mark all objects's lines intersecting with the ray
         for (var bb = 0; bb < bodies.length; bb++) {
@@ -361,7 +400,7 @@ function senseDistance() {
         rayAngle = robotAngle + attachAngle + this.lookAngle;
 
   const rPos = this.parent.body.position,
-        rSize = simInfo.robotSize,
+        rSize = this.attachRadius,
         startPoint = {x: rPos.x + (rSize+1) * Math.cos(robotAngle + attachAngle),
                       y: rPos.y + (rSize+1) * Math.sin(robotAngle + attachAngle)};
 
@@ -371,6 +410,7 @@ function senseDistance() {
   };
 
   function sensorRay(bodies, rayLength) {
+      bodies = bodies.filter(body => body.role != 'robot');
     // Cast ray of supplied length and return the bodies that collide with it.
     const rayWidth = 1e-100,
           endPoint = getEndpoint(rayLength);
@@ -429,7 +469,7 @@ function senseDistance() {
     context.beginPath();
     context.moveTo(startPoint.x, startPoint.y);
     context.lineTo(endPoint.x, endPoint.y);
-    context.strokeStyle = this.parent.info.color;
+    context.strokeStyle = convrgb(this.color);
     context.lineWidth = 0.5;
     context.stroke();
     // mark all objects's lines intersecting with the ray
@@ -466,7 +506,7 @@ function dragSensor(sensor, event) {
   const robotBay = document.getElementById('bayLemming'),
         bCenter = {x: robotBay.width/2,
                    y: robotBay.height/2},
-        rSize = simInfo.robotSize,
+        rSize = sensor.attachRadius,
         bScale = simInfo.bayScale,
         sSize = sensor.getWidth(),
         mAngle = Math.atan2(  event.mouse.x - bCenter.x,
@@ -491,12 +531,12 @@ function loadBay(robot) {
   const robotBay = document.getElementById("bayLemming");
   const bCenter = {x: robotBay.width/2,
                    y: robotBay.height/2},
-        rSize = simInfo.robotSize,
         bScale = simInfo.bayScale;
 
   for (var ss = 0; ss < robot.info.sensors.length; ++ss) {
     const curSensor = robot.sensors[ss],
-          attachAngle = curSensor.attachAngle;
+          attachAngle = curSensor.attachAngle,
+          rSize = curSensor.attachRadius;
     // put current sensor into global variable, make mouse-interactive
     sensors[ss] = makeInteractiveElement(new SensorGraphics(curSensor),
                                          document.getElementById("bayLemming"));
@@ -585,11 +625,11 @@ function getSensorValById(robot, id) {
 
 function robotMove(robot) {
   // TODO: Define Lemming program here.
-  const distL = getSensorValById(robot, 'distL'),
+  /*const distL = getSensorValById(robot, 'distL'),
         distR = getSensorValById(robot, 'distR');
 
   const objL = classifyRGB(getSensorValById(robot, 'colL')),
-        objR = classifyRGB(getSensorValById(robot, 'colR'));
+        objR = classifyRGB(getSensorValById(robot, 'colR'));*/
 
   robot.rotate(robot, +0.005);
   robot.drive(robot, 0.0005);
@@ -614,10 +654,7 @@ function robotMove(robot) {
 	sensesBlock = 0;	//TODO plugin code for sensing
 	sensesWall = 0;
 
-	console.log(distL)
-	console.log(distR)
-	console.log(objL)
-	console.log(objR)
+
 	
 	//TODO test and fine tune the main behavior
 	//Uncomment next code block to implement the next behavior
@@ -681,10 +718,11 @@ function plotRobot(context,
       rSize = simInfo.robotSize;
   const showInternalEdges = true;
 
+
   if (context.canvas.id == "bayLemming") {
     scale = simInfo.bayScale;
     half = Math.floor(rSize/2*scale);
-    full = half * 2;
+    full = half* 2;
     x = xTopLeft + full;
     y = yTopLeft + full;
     angle = -Math.PI / 2;
@@ -731,6 +769,7 @@ function plotRobot(context,
       context.lineTo(part.vertices[0].x,
                      part.vertices[0].y);
     }
+
     context.strokeStyle = convrgb(body.color);
     context.lineWidth = 1.5;
     context.stroke();
@@ -745,6 +784,7 @@ function plotRobot(context,
   if (context.canvas.id == "arenaLemming") {
     for (ss = 0; ss < this.info.sensors.length; ++ss) {
       context.beginPath();
+      full = 2*Math.floor(this.info.sensors[ss].attachRadius/2*scale)
       context.arc(full * Math.cos(this.info.sensors[ss].attachAngle),
                   full * Math.sin(this.info.sensors[ss].attachAngle),
                   scale, 0, 2*Math.PI);
@@ -779,10 +819,9 @@ function classifyRGB(rgb) {
 
 function simStep() {
   // advance simulation by one step (except MatterJS engine's physics)
-    console.log(simInfo.percentageBlueBoxesInWall > 0.80)
   if (simInfo.curSteps < simInfo.maxSteps && simInfo.percentageBlueBoxesInWall < 0.80) {
     repaintBay();
-    drawBoard();
+      drawBoard();
     for (var rr = 0; rr < robots.length; ++rr) {
       robotUpdateSensors(robots[rr]);
       robotMove(robots[rr]);
@@ -830,7 +869,6 @@ function updateStatistics() {
 
       boxesWithinTreshFromCorner = boxesDisFromCorner.filter(boxDist => boxDist < treshold)
 
-      console.log(boxesWithinTreshFromCorner.length / blueBoxes.length)
       return(boxesWithinTreshFromCorner.length / blueBoxes.length);
     }
 
