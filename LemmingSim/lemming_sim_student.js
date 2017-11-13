@@ -565,8 +565,8 @@ function loadFromSVG() {
 
 
   jQuery(data).find('path').each(function(_, path) {
-    var points = Matter.Svg.pathToVertices(path, 10);
-    vertexSets.push(Matter.Vertices.scale(points, 0.2, 0.2));
+    var points = Matter.Svg.pathToVertices(path, 5);
+     vertexSets.push(Matter.Vertices.scale(points, 1, 1))
   });
 
   return vertexSets;
@@ -575,14 +575,12 @@ function loadFromSVG() {
 function InstantiateRobot(robotInfo) {
   // load robot's body shape from SVG file
   const bodySVGpoints = loadFromSVG();
-  this.body = Matter.Bodies.rectangle(robotInfo.init.x,
+  this.body = Matter.Bodies.fromVertices(robotInfo.init.x,
                                          robotInfo.init.y,
-                                        2,2,
+                                        bodySVGpoints,
                                          {frictionAir: simInfo.airDrag,
                                           mass: simInfo.robotMass,
                                           color: [255, 255, 255],
-                                          vertices: bodySVGpoints[0],
-                                          axes: bodySVGpoints[0],
                                           role: 'robot'}, true, removeCollinear = 0.01);
 
 
@@ -658,8 +656,7 @@ function robotMove(robot) {
 		sensesWall = true;
 	}
 
-	console.log(sensesWall);
-	console.log(objMid);
+
 	
 	if(sensesBlock){
 		switch(objMid){
