@@ -373,7 +373,7 @@ function senseColor() {
         }
         context.stroke();
     }
-
+	
     this.value = colorNoise(color);
 };
 
@@ -625,15 +625,12 @@ function getSensorValById(robot, id) {
 
 function robotMove(robot) {
   // TODO: Define Lemming program here.
-  /*const distL = getSensorValById(robot, 'distL'),
-        distR = getSensorValById(robot, 'distR');
+  const dist = getSensorValById(robot, 'dist');
 
-  const objL = classifyRGB(getSensorValById(robot, 'colL')),
-        objR = classifyRGB(getSensorValById(robot, 'colR'));*/
-
-  robot.rotate(robot, +0.005);
-  robot.drive(robot, 0.0005);
-    
+	//gives string of object
+  const objLeft = classifyRGB(getSensorValById(robot, 'leftCol')),
+        objRight = classifyRGB(getSensorValById(robot, 'rightCol')),
+        objMid = classifyRGB(getSensorValById(robot, 'midCol'));
  // Initial version of the Lemmings program - Johan
  // The following rules are implemented:
 	// By default the Lemming should wander around in a slight curve
