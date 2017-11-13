@@ -58,7 +58,7 @@ RobotInfo = [
             {sense: senseColor,  // function handle, determines type of sensor
                 attachRadius: 3*simInfo.robotSize,
                 minVal: 0,  // minimum detectable distance, in pixels
-                maxVal: 50,  // maximum detectable distance, in pixels
+                maxVal: 10,  // maximum detectable distance, in pixels
                 attachAngle: -Math.PI/10,  // where the sensor is mounted on robot body
                 lookAngle: Math.PI/12,  // direction the sensor is looking (relative to center-out)
                 id: 'leftCol',  // a unique, arbitrary ID of the sensor, for printing/debugging
@@ -69,7 +69,7 @@ RobotInfo = [
             {sense: senseColor,  // function handle, determines type of sensor
                 attachRadius: 2*simInfo.robotSize,
                 minVal: 0,  // minimum detectable distance, in pixels
-                maxVal: 50,  // maximum detectable distance, in pixels
+                maxVal: 2,  // maximum detectable distance, in pixels								NOTE: This does not scale properly.
                 attachAngle: -Math.PI/7.5,  // where the sensor is mounted on robot body
                 lookAngle: Math.PI/2,  // direction the sensor is looking (relative to center-out)
                 id: 'midCol',  // a unique, arbitrary ID of the sensor, for printing/debugging
@@ -79,10 +79,10 @@ RobotInfo = [
             },
             {sense: senseColor,  // function handle, determines type of sensor
                 attachRadius: 2.0*simInfo.robotSize,
-                minVal: 20,  // minimum detectable distance, in pixels
-                maxVal: 50,  // maximum detectable distance, in pixels
+                minVal: 0,  // minimum detectable distance, in pixels
+                maxVal: 5,  // maximum detectable distance, in pixels
                 attachAngle: Math.PI/4,  // where the sensor is mounted on robot body
-                lookAngle: -Math.PI/8,  // direction the sensor is looking (relative to center-out)
+                lookAngle: 0,  // direction the sensor is looking (relative to center-out)
                 id: 'rightCol',  // a unique, arbitrary ID of the sensor, for printing/debugging
                 color: [0, 250, 0],  // sensor color [in RGB], to distinguish them
                 parent: null,  // robot object the sensor is attached to, added by InstantiateRobot
@@ -93,7 +93,7 @@ RobotInfo = [
                 minVal: 20,  // minimum detectable distance, in pixels
                 maxVal: 50,  // maximum detectable distance, in pixels
                 attachAngle: 0,  // where the sensor is mounted on robot body
-                lookAngle: 0,  // direction the sensor is looking (relative to center-out)
+                lookAngle: Math.PI/20,  // direction the sensor is looking (relative to center-out)
                 id: 'dist',  // a unique, arbitrary ID of the sensor, for printing/debugging
                 color: [175, 0, 175],  // sensor color [in RGB], to distinguish them
                 parent: null,  // robot object the sensor is attached to, added by InstantiateRobot
@@ -643,48 +643,66 @@ function robotMove(robot) {
 	// - If it carreis a blue block it should turn left to leave the block
 	// - If it carries a red block it should turn right to keep the block
 	
-	driveConstant = 0.0005;
-	turnConstant = 0.005;
+	driveConstant = 0.00025;
+	turnConstant = 0.0025;
 	
-	//TODO possible to combine distance and color sensor?
-	//TODO add sensor to front instead of sides/ or in addtion to
-	sensesBlock = 0;	//TODO plugin code for sensing
-	sensesWall = 0;
 
+	sensesBlock = false;	
+	sensesWall = false;
 
+	if(objMid == "Red" || objMid == "Blue"){
+		sensesBlock = true;
+	}
+
+	if(objLeft == "Wall" || objRight == "Wall"){
+		sensesWall = true;
+	}
+
+	console.log(sensesWall);
+	console.log(objMid);
 	
-	//TODO test and fine tune the main behavior
-	//Uncomment next code block to implement the next behavior
-	/*
 	if(sensesBlock){
-		switch(){
-			case noBlock:
+		switch(objMid){
+			case "Empty":
+			case "Robot":
+			case "Wall":
 				driveVector(robot, force=driveConstant, angle=0);
-			case blueBlock:
+				break;
+			case "Blue":
 				driveVector(robot, force=driveConstant, angle=turnConstant);
-			case redBlock:
+				break;
+			case "Red":
 				driveVector(robot, force=0, angle=turnConstant);
+				break;
 			default:
 				console.log("Error")
 		}
+	}
 	if(sensesWall){
-		switch(){
- 			case noBlock:
-				driveVector(robot, force=0, angle=0);
-			case blueBlock:
-				driveVector(robot, force=driveVector, angle=turnConstant);
-			case redBlock:
+		switch(objMid){
+			case "Empty":
+			case "Robot":
+			case "Wall":
+				driveVector(robot, force=0, angle=-turnConstant);
+				break;
+			case "Blue":
 				driveVector(robot, force=0, angle=turnConstant);
+				break;
+			case "Red":
+				driveVector(robot, force=0, angle=-turnConstant);
+				break;
 			default:
 				console.log("Error")
 		}
-	*/
-	
+	}
+
 	//TODO check which direction is left and right
 	//TODO work out turning left to leave blue block if wall sensed
 	//TODO work out grasping and leaving blocks
 	//TODO test if the function driveVector works
-	driveVector(robot, force=driveConstant, angle=turnConstant);
+	if(!sensesWall && !sensesBlock){
+		driveVector(robot, force=driveConstant, angle=turnConstant);
+	}
 	
 	//Helper function
 		//use the concept of a vector to determine movement of a robot
