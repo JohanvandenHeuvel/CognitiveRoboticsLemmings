@@ -819,7 +819,7 @@ function classifyRGB(rgb) {
 
 function simStep() {
   // advance simulation by one step (except MatterJS engine's physics)
-  if (simInfo.curSteps < simInfo.maxSteps && simInfo.percentageBlueBoxesInWall < 0.80) {
+  if (simInfo.curSteps < simInfo.maxSteps && simInfo.percentageBlueBoxesInWall < 0.85) {
     repaintBay();
       drawBoard();
     for (var rr = 0; rr < robots.length; ++rr) {
