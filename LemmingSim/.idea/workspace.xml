@@ -17,8 +17,8 @@
       <file leaf-file-name="lemming_sim_student.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lemming_sim_student.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="733">
-              <caret line="381" column="65" lean-forward="false" selection-start-line="381" selection-start-column="65" selection-end-line="381" selection-end-column="68" />
+            <state relative-caret-position="-4028">
+              <caret line="430" column="2" lean-forward="false" selection-start-line="430" selection-start-column="2" selection-end-line="430" selection-end-column="2" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -174,6 +174,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/lemming_sim_student.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/matter.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="155925">
+          <caret line="7425" column="0" lean-forward="false" selection-start-line="7425" selection-start-column="0" selection-end-line="7425" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="jar://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/lib/JavaScriptLanguage.jar!/com/intellij/lang/javascript/index/predefined/DHTML.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="309">
@@ -198,8 +216,58 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lemming_sim_student.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="733">
-          <caret line="381" column="65" lean-forward="false" selection-start-line="381" selection-start-column="65" selection-end-line="381" selection-end-column="68" />
+        <state relative-caret-position="676">
+          <caret line="654" column="44" lean-forward="false" selection-start-line="654" selection-start-column="7" selection-end-line="654" selection-end-column="44" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lemming_sim_student.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/matter.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="155925">
+          <caret line="7425" column="0" lean-forward="false" selection-start-line="7425" selection-start-column="0" selection-end-line="7425" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/lib/JavaScriptLanguage.jar!/com/intellij/lang/javascript/index/predefined/DHTML.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="309">
+          <caret line="946" column="0" lean-forward="false" selection-start-line="946" selection-start-column="0" selection-end-line="946" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/lib/JavaScriptLanguage.jar!/com/intellij/lang/javascript/index/predefined/EcmaScript.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="309">
+          <caret line="635" column="9" lean-forward="false" selection-start-line="635" selection-start-column="9" selection-end-line="635" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/matter.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="155841">
+          <caret line="7425" column="0" lean-forward="false" selection-start-line="7425" selection-start-column="0" selection-end-line="7425" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lemming_sim_student.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-4028">
+          <caret line="430" column="2" lean-forward="false" selection-start-line="430" selection-start-column="2" selection-end-line="430" selection-end-column="2" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
