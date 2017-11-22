@@ -22,7 +22,7 @@
 
 // Simulation settings; please change anything that you think makes sense.
 simInfo = {
-  maxSteps: 50000,  // maximal number of simulation steps to run
+  maxSteps: 300000,  // maximal number of simulation steps to run
   airDrag: 0.1,  // "air" friction of enviroment; 0 is vacuum, 0.9 is molasses
   boxFric: 0.005, // friction between boxes during collisions
   boxMass: 0.01*10,  // mass of boxes
